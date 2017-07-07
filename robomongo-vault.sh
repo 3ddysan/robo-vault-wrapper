@@ -37,13 +37,17 @@ function sanityChecks() {
         show_error "Vault" "Can't find Vault client under ${VAULT_CLIENT}"
         return 1
     fi
+    if [[ ! -f ${JSON_PROCESSOR} ]]; then
+        show_error "JSON" "Can't find jq under ${JSON_PROCESSOR}"
+        return 2
+    fi
     if [[ ! -f ${ROBOMONGO_CONFIG} ]]; then
         show_error "Config" "Can't find Robomongo Config under ${ROBOMONGO_CONFIG}"
-        return 2
+        return 3
     fi
     if is_empty "${VAULT_ADDR:-}"; then
         show_error "Vault" "Variable VAULT_ADDR is not set."
-        return 3
+        return 4
     fi
     show_info "-" "\e[32mUsing ROBOMONGO_CONFIG: ${ROBOMONGO_CONFIG}"
     show_info "-" "\e[32mUsing VAULT_ADDR: ${VAULT_ADDR}"
