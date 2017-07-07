@@ -1,4 +1,4 @@
-# Robomongo Vault
+# RoboVaultWrapper
 Retrieves db passwords from vault for robomongo/robo3t config.
 
 ## How to
