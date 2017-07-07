@@ -145,8 +145,8 @@ function retrieveCredentials() {
         show_info "-" "Retrieve credentials for ${connectionName}"
         echo "todo: retrieve credentials here"
         configWithCredentials=$(setCredentialsInJson "${configWithCredentials}" "${connectionName}" "ed" "schleck")
-        echo "todo: save configWithCredentials as new config"
     done
+    echo "todo: save configWithCredentials as new config"
 }
 
 function startRobo() {
