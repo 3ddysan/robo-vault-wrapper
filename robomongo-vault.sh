@@ -6,6 +6,7 @@ set -o pipefail
 
 export VAULT_ADDR="https://localhost:443"
 
+readonly SLEEP_TIME=3
 readonly ZENITY='/usr/bin/zenity'
 readonly VAULT_CLIENT='/usr/bin/vault'
 readonly VAULT_USERNAME_FIELD='username'
@@ -158,8 +159,9 @@ function retrieveCredentials() {
 }
 
 function startRobo() {
-    echo "todo: start robo3t here"
-    echo "todo: remove config with passwords in background after some sleep time"
+    ${ROBOMONGO} &
+    sleep ${SLEEP_TIME}; rm "${ROBOMONGO_CONFIG}"
+    wait
 }
 
 function main() {
