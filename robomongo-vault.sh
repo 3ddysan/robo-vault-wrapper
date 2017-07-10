@@ -149,6 +149,10 @@ function retrieveCredentials() {
 
     findEnabledConnectionNames "${templateFileContent}" | while read connectionName ; do
         show_info "-" "Retrieve credentials for ${connectionName}"
+        if [[ "${connectionName}" != *"."* ]]; then
+            show_info "-" "Ignore connection '${connectionName}' as vault path, because it does not contain any dots."
+            continue
+        fi
         local secretPath="${connectionName//.//}"
         local user=$(${VAULT_CLIENT} read -field="${VAULT_USERNAME_FIELD}" ${secretPath})
         local pass=$(${VAULT_CLIENT} read -field="${VAULT_PASSWORD_FIELD}" ${secretPath})
