@@ -8,6 +8,8 @@ export VAULT_ADDR="https://localhost:443"
 
 readonly ZENITY='/usr/bin/zenity'
 readonly VAULT_CLIENT='/usr/bin/vault'
+readonly VAULT_USERNAME_FIELD='username'
+readonly VAULT_PASSWORD_FIELD='password'
 readonly JSON_PROCESSOR='/usr/bin/jq'
 readonly ROBOMONGO='/usr/bin/robo3t'
 readonly ROBOMONGO_HOME="$HOME/.3T/robo-3t"
@@ -142,15 +144,17 @@ function prepareRoboConfig() {
 function retrieveCredentials() {
     local templateFilepath="$(ls -d -1 -v ${ROBOMONGO_CONFIG_PATH}/*.* | tail -n 1)"
     local templateFileContent="$(cat ${templateFilepath})"
-    local configWithCredentials="${templateFileContent}"
+    configWithCredentials="${templateFileContent}"
     show_info "Vault" "Retrieve credentials for all enabled Connection Names (${templateFilepath})"
 
     findEnabledConnectionNames "${templateFileContent}" | while read connectionName ; do
         show_info "-" "Retrieve credentials for ${connectionName}"
-        echo "todo: retrieve credentials here"
-        configWithCredentials=$(setCredentialsInJson "${configWithCredentials}" "${connectionName}" "ed" "schleck")
+        local secretPath="${connectionName//.//}"
+        local user=$(${VAULT_CLIENT} read -field="${VAULT_USERNAME_FIELD}" ${secretPath})
+        local pass=$(${VAULT_CLIENT} read -field="${VAULT_PASSWORD_FIELD}" ${secretPath})
+        configWithCredentials=$(setCredentialsInJson "${configWithCredentials}" "${connectionName}" "${user}" "${pass}")
+        echo "${configWithCredentials}" > "${ROBOMONGO_CONFIG}"
     done
-    echo "todo: save configWithCredentials as new config"
 }
 
 function startRobo() {
