@@ -137,8 +137,7 @@ function prepareRoboConfig() {
             fi
         done
     fi
-    cp "${ROBOMONGO_CONFIG}" "${backup_name}" && \
-    rm "${ROBOMONGO_CONFIG}" && \
+    mv "${ROBOMONGO_CONFIG}" "${backup_name}" && \
     registerCleanUpRoutine "${ROBOMONGO_CONFIG}" "${backup_name}"
 }
 
