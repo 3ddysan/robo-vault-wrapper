@@ -4,19 +4,28 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-export VAULT_ADDR="${1:-http://127.0.0.1:8200}"
-readonly SLEEP_TIME=10
+# locations of used tools
 readonly ZENITY='/usr/bin/zenity'
 readonly VAULT_CLIENT='/usr/bin/vault'
-readonly VAULT_USERNAME_FIELDS="username user"
-readonly VAULT_PASSWORD_FIELDS="password pass"
 readonly JSON_PROCESSOR='/usr/bin/jq'
+
+# robomongo / robo3t configuration
 readonly ROBOMONGO='/usr/bin/robo3t'
 readonly ROBOMONGO_HOME="$HOME/.3T/robo-3t"
-readonly ROBOMONGO_LATEST_VERSION=$(ls -v $ROBOMONGO_HOME | tail -n 1)
+readonly ROBOMONGO_CONFIG_FILENAME="robo3t.json"
+
+# possible keys in secret, which contains credentials
+readonly VAULT_USERNAME_FIELDS="username user"
+readonly VAULT_PASSWORD_FIELDS="password pass"
+
+# internal variables
+readonly ROBOMONGO_LATEST_VERSION=$(ls -v ${ROBOMONGO_HOME} | tail -n 1)
 readonly ROBOMONGO_CONFIG_PATH="${ROBOMONGO_HOME}/${ROBOMONGO_LATEST_VERSION}"
-readonly ROBOMONGO_CONFIG="${ROBOMONGO_CONFIG_PATH}/robo3t.json"
-readonly ROBOMONGO_CONFIG_BACKUP="${ROBOMONGO_CONFIG_PATH}/robo3t.json.backup"
+readonly ROBOMONGO_CONFIG="${ROBOMONGO_CONFIG_PATH}/${ROBOMONGO_CONFIG_FILENAME}"
+readonly ROBOMONGO_CONFIG_BACKUP="${ROBOMONGO_CONFIG_PATH}/${ROBOMONGO_CONFIG_FILENAME}.backup"
+export VAULT_ADDR="${1:-http://127.0.0.1:8200}"
+# time to sleep before deleting temporary config with credentials
+readonly SLEEP_TIME=10
 
 function is_empty() {
     [[ -z "${1/ //}" ]]
