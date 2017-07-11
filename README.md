@@ -6,6 +6,8 @@ Retrieves db passwords from vault for Robo-3t config.
     - Connection Name must be secret vault path (e.g. secrets/mongo/credentials becomes secrets.mongo.credentials)
     - Authentication must be enabled for this connection
     - Keep username and password empty
+    - exit Robo3T after
+   
 2. Open wrapper script and configure:
     - locations of zenity/jq/vault/robomongo
     - config folder of robo3t/robomongo (e.g. ~/.3T/robo-3t or ~/.3T/robomongo)
