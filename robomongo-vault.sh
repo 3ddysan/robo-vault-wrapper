@@ -4,13 +4,12 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-export VAULT_ADDR="https://localhost:443"
-
-readonly SLEEP_TIME=3
+export VAULT_ADDR="${1:-http://127.0.0.1:8200}"
+readonly SLEEP_TIME=10
 readonly ZENITY='/usr/bin/zenity'
 readonly VAULT_CLIENT='/usr/bin/vault'
-readonly VAULT_USERNAME_FIELD='username'
-readonly VAULT_PASSWORD_FIELD='password'
+readonly VAULT_USERNAME_FIELDS="username user"
+readonly VAULT_PASSWORD_FIELDS="password pass"
 readonly JSON_PROCESSOR='/usr/bin/jq'
 readonly ROBOMONGO='/usr/bin/robo3t'
 readonly ROBOMONGO_HOME="$HOME/.3T/robo-3t"
@@ -141,6 +140,19 @@ function prepareRoboConfig() {
     registerCleanUpRoutine "${ROBOMONGO_CONFIG}" "${backup_name}"
 }
 
+function readVaultField() {
+    local secretPath=$1;shift
+    local fields=$@
+
+    for field in ${fields}; do
+        ${VAULT_CLIENT} read -field="${field}" ${secretPath}
+        if [[ $? == 0 ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 function retrieveCredentials() {
     local templateFilepath="$(ls -d -1 -v ${ROBOMONGO_CONFIG_PATH}/*.* | tail -n 1)"
     local templateFileContent="$(cat ${templateFilepath})"
@@ -154,8 +166,8 @@ function retrieveCredentials() {
             continue
         fi
         local secretPath="${connectionName//.//}"
-        local user=$(${VAULT_CLIENT} read -field="${VAULT_USERNAME_FIELD}" ${secretPath})
-        local pass=$(${VAULT_CLIENT} read -field="${VAULT_PASSWORD_FIELD}" ${secretPath})
+        local user=$(readVaultField "${secretPath}" ${VAULT_USERNAME_FIELDS})
+        local pass=$(readVaultField "${secretPath}" ${VAULT_PASSWORD_FIELDS})
         configWithCredentials=$(setCredentialsInJson "${configWithCredentials}" "${connectionName}" "${user}" "${pass}")
         echo "${configWithCredentials}" > "${ROBOMONGO_CONFIG}"
     done
