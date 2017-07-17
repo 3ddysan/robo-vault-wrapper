@@ -18,10 +18,10 @@ Retrieves db passwords from vault for Robo-3t config.
 OS:
 - linux
 
-libs:
+dependencies:
 - Robo3T (Robomongo) (https://robomongo.org/)
 - jq (https://stedolan.github.io/jq/download/) 
 - vault (https://www.vaultproject.io/downloads.html)
 
-optional:
+optional ui:
 - zenity (win: https://github.com/kvaps/zenity-windows/releases)
