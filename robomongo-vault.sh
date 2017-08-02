@@ -23,7 +23,7 @@ readonly ROBOMONGO_LATEST_VERSION=$(ls -v ${ROBOMONGO_HOME} | tail -n 1)
 readonly ROBOMONGO_CONFIG_PATH="${ROBOMONGO_HOME}/${ROBOMONGO_LATEST_VERSION}"
 readonly ROBOMONGO_CONFIG="${ROBOMONGO_CONFIG_PATH}/${ROBOMONGO_CONFIG_FILENAME}"
 readonly ROBOMONGO_CONFIG_BACKUP="${ROBOMONGO_CONFIG_PATH}/${ROBOMONGO_CONFIG_FILENAME}.backup"
-export VAULT_ADDR="${1:-http://127.0.0.1:8200}"
+export VAULT_ADDR="${1:-$VAULT_ADDR}"
 # time to sleep before deleting temporary config with credentials
 readonly SLEEP_TIME=10
 
